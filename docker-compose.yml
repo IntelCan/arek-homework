@@ -1,5 +1,4 @@
 version: '3.5'
-#Docker compose dedicated to run postgres and pgadmin locally
 services:
   postgres:
     image: postgres:10
@@ -11,9 +10,9 @@ services:
     volumes:
        - ~/docker/postgres:/data/postgres
     ports:
-      - "5432:5432"
+      - "9020:5432"
     networks:
-      - postgres
+      - shopping-list-network
     restart: unless-stopped
 
   pgadmin:
@@ -27,11 +26,22 @@ services:
     volumes:
        - ~/docker/pgadmin:/pgadmin
     ports:
-      - "5050:5050"
+      - "9010:5050"
     networks:
-      - postgres
+      - shopping-list-network
     restart: unless-stopped
 
+  shopping-list-server:
+    container_name: shopping-list
+    build:
+        context: ./
+        dockerfile: Dockerfile
+    image: shopping-list-server:latest
+    ports:
+        - 9000:8080
+    networks:
+        - shopping-list-network
+
 networks:
-  postgres:
+  shopping-list-network:
     driver: bridge

@@ -1,5 +1,6 @@
 package com.example.shoppinglist.application;
 
+import com.example.shoppinglist.Initializer;
 import com.example.shoppinglist.application.command.AddProduct;
 import com.example.shoppinglist.application.command.CheckProduct;
 import com.example.shoppinglist.application.command.CreateShoppingList;
@@ -9,8 +10,11 @@ import com.example.shoppinglist.domain.ShoppingList;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -18,8 +22,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Transactional
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Testcontainers
+@SpringBootTest
+@ContextConfiguration(initializers = Initializer.class)
 class ShoppingListServiceITTest {
+
     @Autowired
     private ShoppingListService shoppingListService;
 
@@ -106,9 +113,5 @@ class ShoppingListServiceITTest {
         assertNotNull(modifiedProduct);
         assertTrue(modifiedProduct.isChecked());
     }
-
-
-
-
 
 }

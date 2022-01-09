@@ -17,9 +17,6 @@
 
     <properties>
         <java.version>11</java.version>
-        <db.url>jdbc:postgresql://localhost:5432/local_db</db.url>
-        <db.username>admin</db.username>
-        <db.password>admin</db.password>
         <testcontainers.version>1.16.2</testcontainers.version>
     </properties>
 
@@ -87,23 +84,6 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.flywaydb</groupId>
-                <artifactId>flyway-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>migrate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <url>${db.url}</url>
-                    <user>${db.username}</user>
-                    <password>${db.password}</password>
                 </configuration>
             </plugin>
         </plugins>

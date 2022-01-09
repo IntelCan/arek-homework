@@ -3,6 +3,7 @@ package com.example.shoppinglist.infrastructure.persistence;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -15,7 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Data
 @Table(name = "products")
-class ProductEntity {
+class ProductEntity implements Persistable<UUID> {
     @Id
     private UUID id;
 
@@ -30,6 +31,15 @@ class ProductEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private ShoppingListEntity shoppingList;
+
+    @Transient
+    protected boolean newOne;
+
+    @Override
+    public boolean isNew() {
+        return newOne;
+    }
+
 
     @Override
     public boolean equals(Object o) {

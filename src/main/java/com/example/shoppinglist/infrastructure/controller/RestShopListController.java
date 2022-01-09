@@ -12,6 +12,9 @@ import com.example.shoppinglist.domain.ProductAlreadyExistException;
 import com.example.shoppinglist.domain.ProductNotFoundException;
 import com.example.shoppinglist.infrastructure.query.ShopListInfoDto;
 import com.example.shoppinglist.infrastructure.query.ShopListQueryService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,6 +32,7 @@ public class RestShopListController {
     private final ShoppingListService shoppingListService;
     private final ShopListQueryService shopListQueryService;
 
+    @ApiOperation(value = "Create shopping list")
     @PostMapping
     public void create(@RequestBody RestShopListRequest request) {
         List<Product> products = request.getProducts().stream()
@@ -37,24 +41,28 @@ public class RestShopListController {
         shoppingListService.create(new CreateShoppingList(request.getShopListName(), products));
     }
 
+    @ApiOperation(value = "Add product for existing shopping list")
     @PostMapping("/{shoppingListName}/product")
     public void addProduct(@PathVariable String shoppingListName,
                            @RequestBody RestProductInfo restProductInfo) {
         shoppingListService.add(new AddProduct(shoppingListName, ProductConverter.from(restProductInfo)));
     }
 
+    @ApiOperation(value = "Mark as checked product from shopping list")
     @PatchMapping("/{shoppingListName}/{productName}")
     public void markAsChecked(@PathVariable String shoppingListName,
                               @PathVariable String productName) {
         shoppingListService.markProductAsChecked(new CheckProduct(shoppingListName, productName));
     }
 
+    @ApiOperation(value = "Remove product from shopping list")
     @DeleteMapping("/{shoppingListName}/{productName}")
     public void removeProduct(@PathVariable String shoppingListName,
                               @PathVariable String productName) {
         shoppingListService.remove(new RemoveProduct(shoppingListName, productName));
     }
 
+    @ApiOperation(value = "Get shopping list details")
     @GetMapping("/{name}")
     public ShopListInfoDto get(@PathVariable String name) {
         return shopListQueryService.get(name);
@@ -96,6 +104,7 @@ public class RestShopListController {
     @ExceptionHandler(Throwable.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<String> handleAnyUncaughtException(Throwable exception) {
+        log.error("Internal error occurred", exception);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Something went wrong");

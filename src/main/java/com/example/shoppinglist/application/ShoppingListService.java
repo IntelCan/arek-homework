@@ -8,7 +8,9 @@ import com.example.shoppinglist.domain.Product;
 import com.example.shoppinglist.domain.ShoppingList;
 import com.example.shoppinglist.domain.ShoppingListFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
+@Service
 @RequiredArgsConstructor
 public class ShoppingListService {
     private final ShoppingListRepository shoppingListRepository;

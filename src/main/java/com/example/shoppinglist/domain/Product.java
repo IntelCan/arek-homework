@@ -1,6 +1,7 @@
 package com.example.shoppinglist.domain;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -11,11 +12,18 @@ public class Product {
     private String unit;
     private boolean checked;
 
-    @Builder
     public Product(String name, float amount, String unit) {
         this.name = name;
         this.amount = amount;
         this.unit = unit;
+    }
+
+    @Builder
+    public Product(String name, float amount, String unit, boolean checked) {
+        this.name = name;
+        this.amount = amount;
+        this.unit = unit;
+        this.checked = checked;
     }
 
     Product markAsChecked() {

@@ -37,7 +37,7 @@ services:
         dockerfile: Dockerfile
     image: shopping-list-server:latest
     ports:
-        - 9000:8080
+        - 9000-9005:8080
     networks:
         - shopping-list-network
 

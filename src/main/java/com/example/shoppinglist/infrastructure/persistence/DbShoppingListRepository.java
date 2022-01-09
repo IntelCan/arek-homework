@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
+import java.util.Optional;
+
 @Repository
 @RequiredArgsConstructor
 class DbShoppingListRepository implements ShoppingListRepository, ShopListQueryRepository {
@@ -48,7 +51,6 @@ class DbShoppingListRepository implements ShoppingListRepository, ShopListQueryR
     }
 
     @Override
-    @Transactional
     public void updateProduct(String shopListName, Product product) {
         productRepository.findByNameAndShoppingList_Name(product.getName(), shopListName)
                 .map(productEntity -> updateProduct(product, productEntity))
@@ -71,10 +73,15 @@ class DbShoppingListRepository implements ShoppingListRepository, ShopListQueryR
     }
 
     private void remove(ShoppingListEntity shoppingListEntity, String productName) {
-        shoppingListEntity.getProducts().stream()
+        Optional<ProductEntity> product = shoppingListEntity.getProducts().stream()
                 .filter(productEntity -> productEntity.getName().equals(productName))
-                .forEach(shoppingListEntity::removeProduct);
-        shoppingListRepository.save(shoppingListEntity);
+                .findFirst();
+
+        if (product.isPresent()) {
+            shoppingListEntity.removeProduct(product.get());
+            shoppingListRepository.save(shoppingListEntity);
+        }
+
     }
 
     private ProductEntity updateProduct(Product product, ProductEntity productEntity) {

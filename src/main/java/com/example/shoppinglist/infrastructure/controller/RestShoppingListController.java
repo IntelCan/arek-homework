@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(path = "/shopping-list")
 @RequiredArgsConstructor
-public class RestShopListController {
+public class RestShoppingListController {
     private final ShoppingListService shoppingListService;
     private final ShopListQueryService shopListQueryService;
 

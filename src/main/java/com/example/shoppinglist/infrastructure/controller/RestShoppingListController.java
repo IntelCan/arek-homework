@@ -19,8 +19,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +36,7 @@ public class RestShoppingListController {
 
     @ApiOperation(value = "Create shopping list")
     @PostMapping
-    public void create(@RequestBody RestShopListRequest request) {
+    public void create(@RequestBody @Valid RestShopListRequest request) {
         List<Product> products = request.getProducts().stream()
                 .map(ProductConverter::from)
                 .collect(Collectors.toList());
@@ -44,7 +46,7 @@ public class RestShoppingListController {
     @ApiOperation(value = "Add product for existing shopping list")
     @PostMapping("/{shoppingListName}/product")
     public void addProduct(@PathVariable String shoppingListName,
-                           @RequestBody RestProductInfo restProductInfo) {
+                           @RequestBody @Valid RestProductInfo restProductInfo) {
         shoppingListService.add(new AddProduct(shoppingListName, ProductConverter.from(restProductInfo)));
     }
 
@@ -101,6 +103,14 @@ public class RestShoppingListController {
                 .body("Product already exists");
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handleBadRequestException(MethodArgumentNotValidException exception) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body("Check your request body");
+    }
+
     @ExceptionHandler(Throwable.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<String> handleAnyUncaughtException(Throwable exception) {
@@ -109,5 +119,4 @@ public class RestShoppingListController {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Something went wrong");
     }
-
 }

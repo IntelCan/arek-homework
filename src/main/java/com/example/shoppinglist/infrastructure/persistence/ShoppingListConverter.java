@@ -6,6 +6,7 @@ import com.example.shoppinglist.domain.ShoppingListFactory;
 import com.example.shoppinglist.infrastructure.query.ProductInfoDto;
 import com.example.shoppinglist.infrastructure.query.ShopListInfoDto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -13,9 +14,12 @@ import java.util.stream.Collectors;
 class ShoppingListConverter {
 
     static ShoppingList from(ShoppingListEntity shoppingListEntity) {
-        List<Product> products = shoppingListEntity.getProducts().stream()
-                .map(ProductConverter::from)
-                .collect(Collectors.toList());
+        List<Product> products = new ArrayList<>();
+        if (shoppingListEntity.getProducts() != null) {
+             products = shoppingListEntity.getProducts().stream()
+                    .map(ProductConverter::from)
+                    .collect(Collectors.toList());
+        }
         return ShoppingListFactory.build(shoppingListEntity.getName(), products);
     }
 

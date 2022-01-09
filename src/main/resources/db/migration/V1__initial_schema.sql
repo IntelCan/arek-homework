@@ -1,17 +1,18 @@
 DROP TABLE IF EXISTS SHOPPING_LISTS, PRODUCTS;
+CREATE EXTENSION "pgcrypto";
 
 CREATE TABLE SHOPPING_LISTS (
-  id             UUID DEFAULT random_uuid() PRIMARY KEY,
-  name           VARCHAR(100)               UNIQUE,
+  id             UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name           VARCHAR(100)                   UNIQUE
 );
 
 CREATE TABLE PRODUCTS (
-  id                 UUID DEFAULT random_uuid() PRIMARY KEY,
+  id                 UUID         DEFAULT gen_random_uuid() PRIMARY KEY,
   name               VARCHAR(100) NOT NULL,
   amount             NUMERIC      NOT NULL,
-  unit               VARCHAR(48) NOT NULL,
+  unit               VARCHAR(48)  NOT NULL,
   is_checked         BOOLEAN      NOT NULL,
-  shopping_list_id   UUID         NOT NULL,
+  shopping_list_id   UUID         NOT NULL
 );
 
 ALTER TABLE PRODUCTS

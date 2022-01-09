@@ -1,0 +1,37 @@
+version: '3.5'
+#Docker compose dedicated to run postgres and pgadmin locally
+services:
+  postgres:
+    image: postgres:10
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      PGDATA: /data/postgres
+      POSTGRES_DB: local_db
+    volumes:
+       - ~/docker/postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+  pgadmin:
+    links:
+      - postgres:postgres
+    image: thajeztah/pgadmin4
+    environment:
+      PGADMIN_USER: postgres
+      PGADMIN_PASSWORD: postgres
+      PG_ADMIN_DATA_DIR: /pgadmin
+    volumes:
+       - ~/docker/pgadmin:/pgadmin
+    ports:
+      - "5050:5050"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+networks:
+  postgres:
+    driver: bridge
